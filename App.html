@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- Copyright (c) 2010  Rally Software Development Corp.  All rights reserved -->
+<html>
+<head>
+    <title>Table Component Example</title>
+    <meta name="Name"    content="Defects I once owned" />
+    <meta name="Version" content="2013.1" />
+    <meta name="Vendor"  content="Rally Software" />
+    <script type="text/javascript" src="https://rally1.rallydev.com/apps/1.33/sdk.js?showHeader=false"></script>
+    <script type="text/javascript">
+
+        function tableExample() {
+            var rallyDataSource = new rally.sdk.data.RallyDataSource('__WORKSPACE_OID__', '__PROJECT_OID__',
+                    '__PROJECT_SCOPING_UP__', '__PROJECT_SCOPING_DOWN__');
+            function itemQuery() {
+                var queryObject = {
+                    key: 's',
+                    type: 'Defect',
+                    fetch: 'Name,FormattedID,RevisionHistory,Revisions,LastUpdateDate',
+                    query: '( CreationDate > 2014-01-01 )'
+                };
+                rallyDataSource.findAll(queryObject, populateTable);
+            }
+
+            function populateTable(results) {
+                var tableDiv = document.getElementById('aDiv');
+
+                var config = { columns:
+                        [{key : 'Count', width: 40}, {key: 'FormattedIDLink', header: 'Formatted ID', width: 90},
+                            {key: 'RevisionDescription', header: 'Revision Description'},
+                            {key: 'Author', header: 'Author'},
+                            {key: 'LastUpdateDate', header: 'Update Date'},
+                        ] };
+
+                var table = new rally.sdk.ui.Table(config);
+
+                var defCount = 1;
+
+                for ( i=0 ; i<results.s.length ; i++ ) {
+                    //j=0;
+                    for ( j=0 ; j<results.s[i].RevisionHistory.Revisions.length ; j++ ) {
+                        if(results.s[i].RevisionHistory.Revisions[j].Description.indexOf("OWNER changed from [RALLY_USERNAME]")>=0){
+                            results.s[i].Count = defCount++;
+                            results.s[i].CreationDate = results.s[i].RevisionHistory.Revisions[j].CreationDate
+                            results.s[i].Author=results.s[i].RevisionHistory.Revisions[j].User._refObjectName;
+                            results.s[i].RevisionDescription=results.s[i].RevisionHistory.Revisions[j].Description;
+                            results.s[i].FormattedIDLink = new rally.sdk.ui.basic.Link({item:results.s[i], text: results.s[i].FormattedID});
+                            table.addRow(results.s[i]);
+
+                        }
+                    }
+                }
+
+                table.display(tableDiv);
+
+            };
+            itemQuery();
+        }
+
+        rally.addOnLoad(tableExample);
+    </script>
+</head>
+<body>
+<div id="aDiv"></div>
+</body>
+</html>
