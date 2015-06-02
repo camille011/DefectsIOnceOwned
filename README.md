@@ -7,3 +7,6 @@ App that parses Revision History and displays any Defects that were once owned b
 Update the field RALLY_USERNAME with your Rally username to view Defects that were created after Januay 1, 2014 and you once owned.  
 
 Testing the automaticness of Waffle.  Will branch.
+
+After the branch, pushing to waffle-auto-test-#2.
+
