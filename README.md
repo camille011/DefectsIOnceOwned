@@ -11,3 +11,5 @@ Testing the automaticness of Waffle.  Will branch.
 After the branch, pushing to waffle-auto-test-#2.
 
 Now there is something more to commit.
+
+Oh yeah, now I can make a more meaningful commit to test.
